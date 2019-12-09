@@ -166,26 +166,22 @@ def initialize(nbSolution, nbSommet, nbArete, diff):
 
 
 
-def main():
-
-    print("python main function")
-    a = readfile ("./graph4.txt")
-    print (a[4])
-    print (a[1][0])
-    f= open("./graph4form.txt","w+")
+def convertion(argv):
+    textfile = "./graphform.txt"
+    f= open("./graphform.txt","w+")  
+    a = readfile (argv)
+    print ("Edges ==>", a[0][0])
+    print  ("Vertices ==>", a[1][0])
+    #print ("HEAD : ", a[2])
+    #print ("SUCC : ", a[3])
     for i in range (a[1][0]):
         for j in range (a[1][0]):
             if (a[4][i,j] == 1.0):
-                go = ""+str(i)+","+str(j)+",1\n"
-                f.write(go)
+                tmp = ""+str(i)+","+str(j)+",1\n"
+                f.write(tmp)
                 
     
     f.close() 
-
-
     
+    return textfile
 
-
-
-if __name__ == '__main__':
-    main()

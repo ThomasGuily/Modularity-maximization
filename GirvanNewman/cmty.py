@@ -4,6 +4,7 @@ import math
 import csv
 import random as rand
 import sys
+from girvan_newman import convertion 
 
 _DEBUG_ = False
 
@@ -47,7 +48,7 @@ def _GirvanNewmanGetModularity(G, deg_, m_):
     New_deg = UpdateDeg(New_A, G.nodes())
     #Let's compute the Q
     comps = nx.connected_components(G)    #list of components    
-    print('No of communities in decomposed G:', nx.number_connected_components(G))
+    print('NbrdeCommunauté :', nx.number_connected_components(G))
     Mod = 0    #Modularity of a given partitionning
     for c in comps:
         EWC = 0    #no of edges within a community
@@ -58,7 +59,7 @@ def _GirvanNewmanGetModularity(G, deg_, m_):
         Mod += ( float(EWC) - float(RE*RE)/float(2*m_) )
     Mod = Mod/float(2*m_)
     if _DEBUG_:
-        print("Modularity:", Mod)
+        print("Modularité :", Mod)
     return Mod
 
 
@@ -81,34 +82,34 @@ def runGirvanNewman(G, Orig_deg, m_):
     while True:    
         CmtyGirvanNewmanStep(G)
         Q = _GirvanNewmanGetModularity(G, Orig_deg, m_);
-        print("Modularity of decomposed G:", Q)
+        print("Modularité :", Q)
         if Q > BestQ:
             BestQ = Q
             Bestcomps = list(nx.connected_components(G))    #Best Split
-            print("Components:", Bestcomps)
+            print("Composants :", Bestcomps)
         if G.number_of_edges() == 0:
             break
     if BestQ > 0.0:
-        print("Max modularity (Q):", BestQ)
-        print("Graph communities:", Bestcomps)
+        print("Modularité Maximum :", BestQ)
+        print("Meilleurs Composants :", Bestcomps)
     else:
-        print("Max modularity (Q):", BestQ)
+        print("Modularité Maximum :", BestQ)
 
 
 def main(argv):
     if len(argv) < 2:
-        sys.stderr.write("Usage: %s <input graph>\n" % (argv[0],))
+        sys.stderr.write("Pas de fichier %s <input graph>\n" % (argv,))
         return 1
-    graph_fn = argv[1]
+    graph_fn = argv
     G = nx.Graph()  #let's create the graph first
     buildG(G, graph_fn, ',')
     
     if _DEBUG_:
-        print('G nodes:', G.nodes())
-        print('G no of nodes:', G.number_of_nodes())
+        print('G nodes :', G.nodes())
+        print('G no of nodes :', G.number_of_nodes())
     
     n = G.number_of_nodes()    #|V|
-    A = nx.adj_matrix(G)    #adjacenct matrix
+    A = nx.adj_matrix(G)    #adjacency matrix
 
     m_ = 0.0    #the weighted version for number of edges
     for i in range(0,n):
@@ -116,7 +117,7 @@ def main(argv):
             m_ += A[i,j]
     m_ = m_/2.0
     if _DEBUG_:
-        print("m:", m_)
+        print("m :", m_)
 
     #calculate the weighted degree for each node
     Orig_deg = {}
@@ -126,4 +127,6 @@ def main(argv):
     runGirvanNewman(G, Orig_deg, m_)
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+
+    textfile = convertion(sys.argv[1])
+    sys.exit(main(textfile))
